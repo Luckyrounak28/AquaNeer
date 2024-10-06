@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background-color: #f9f9f9;
+        }
+
+        .confirmation-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .confirmation-container h1 {
+            color: green;
+            font-size: 24px;
+        }
+
+        .confirmation-container p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .confirmation-container .green-tick {
+            font-size: 50px;
+            color: green;
+        }
+
+        .go-back-btn,
+        .download-bill-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: rgb(0, 162, 255);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .go-back-btn:hover,
+        .download-bill-btn:hover {
+            background-color: rgb(0, 142, 235);
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <span class="green-tick">✔</span>
+        <h1>Order Confirmed!</h1>
+        <p id="orderMessage"></p>
+        <p id="totalBillMessage"></p>
+        <button class="download-bill-btn" onclick="downloadBill()">Download Bill</button>
+        <button class="go-back-btn" onclick="goBack()">Go Back</button>
+    </div>
+
+    <script>
+        // Retrieve order details from localStorage
+        const orderDetails = JSON.parse(localStorage.getItem('orderDetails'));
+
+        if (orderDetails) {
+            const message = `Thank you, ${orderDetails.name}! Your order for ${orderDetails.quantity} bottle(s) will be delivered to ${orderDetails.address}.`;
+            document.getElementById('orderMessage').innerHTML = message;
+
+            if (orderDetails.event) {
+                document.getElementById('orderMessage').innerHTML += `<br>Special event: ${orderDetails.event}`;
+            }
+
+            // Show total bill
+            const totalPrice = orderDetails.totalPrice;
+            document.getElementById('totalBillMessage').innerHTML = `Total Bill: ₹${totalPrice}`;
+        } else {
+            document.getElementById('orderMessage').innerHTML = "No order details found!";
+        }
+
+        function goBack() {
+            // Clear the order details from localStorage
+            localStorage.removeItem('orderDetails');
+            // Redirect to the index page
+            window.location.href = "main.html";
+        }
+
+        function downloadBill() {
+            if (orderDetails) {
+                const billContent = `
+                -----------------------------
+                SARASWATI AQUA NEER
+                -----------------------------
+                Name: ${orderDetails.name}
+                Delivery Address: ${orderDetails.address}
+                Quantity: ${orderDetails.quantity} bottle(s)
+                Total Price: ₹${orderDetails.totalPrice}
+                ${orderDetails.event ? 'Special Event: ' + orderDetails.event : ''}
+                -----------------------------
+                Thank you for your order!
+                `;
+                
+                // Create a Blob with bill content
+                const blob = new Blob([billContent], { type: 'text/plain' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'bill.txt';
+                link.click();
+            }
+        }
+    </script>
+</body>
+</html>

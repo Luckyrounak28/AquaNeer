@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saraswati Aqua Neer</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e0f7fa; /* Light blue background */
+            color: #333; /* Dark text color */
+        }
+        
+        header {
+            background-color: #006064; /* Teal color */
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav {
+            margin-top: 10px; /* Space between header title and navigation */
+        }
+
+        nav a {
+            color: white; /* Default text color */
+            margin: 0 15px; /* Space between links */
+            text-decoration: none; /* Remove underline */
+            padding: 5px 10px; /* Add padding for better click area */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+        nav a:hover {
+            background-color: #004d40; /* Darker teal background on hover */
+            color: #e0f7fa; /* Light text color on hover */
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        section {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #004d40; /* Dark teal */
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #orderConfirmation {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #006064; /* Teal color for confirmation message */
+        }
+        
+        /* Styles for the payment option */
+        .payment-option {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #006064; /* Border color matching the theme */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #f0f4f4; /* Light background color for contrast */
+        }
+
+        .payment-option label {
+            font-weight: bold; /* Make the label bold */
+        }
+
+        .payment-option select {
+            width: 100%; /* Full-width dropdown */
+            padding: 10px; /* Padding inside the dropdown */
+            border: 1px solid #006064; /* Border color matching the theme */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size for better readability */
+            margin-top: 5px; /* Spacing between label and dropdown */
+        }
+
+        .payment-option select:focus {
+            outline: none; /* Remove default outline */
+            border-color: #004d40; /* Darker border on focus */
+            box-shadow: 0 0 5px rgba(0, 100, 100, 0.5); /* Add a shadow effect */
+        }
+
+        /* Disable the submit button by default */
+        #submitBtn:disabled {
+            background-color: #aaa; /* Gray background */
+            cursor: not-allowed; /* Not-allowed cursor */
+        }
+    </style>
+</head>
+<body>
+    <header>
+          <h1>Saraswati Aqua Neer</h1>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="about.html" target="_blank">About</a>
+            <a href="contact.html" target="_blank">Contact</a>
+            <a href="complaint.html" target="_blank">Complaint</a>
+        </nav>
+    </header>
+
+    <section id="home">
+        <h2>Welcome to Saraswati Aqua Neer</h2>
+        <p>Your trusted partner for delivering clean, purified water. We offer 20-liter bottles for home delivery at ₹25 each.</p>
+    </section>
+
+    <section id="order">
+        <h2>Place Your Order</h2>
+        <form id="orderForm">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="address">Delivery Address:</label>
+            <textarea id="address" required></textarea>
+
+            <label for="quantity">Quantity (20-liter bottles):</label>
+            <input type="number" id="quantity" min="1" required>
+
+            <label for="event">Special Event (Optional):</label>
+            <input type="text" id="event">
+
+            <label for="totalPrice">Total Price (₹):</label>
+            <input type="text" id="totalPrice" readonly>
+
+            <!-- Online Payment Option -->
+            <div class="payment-option">
+                <label for="payment">Payment Option:</label>
+                <select id="payment">
+                    <option value="cod">Cash on Delivery</option>
+                    <option value="online">Online Payment</option>
+                </select>
+            </div>
+
+            <button type="button" id="submitBtn" onclick="placeOrder()" disabled>Submit Order</button>
+        </form>
+        <div id="orderConfirmation"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Saraswati Aqua Neer. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Calculate total price based on quantity
+        document.getElementById('quantity').addEventListener('input', function() {
+            const pricePerBottle = 25; // Price for one bottle
+            const quantity = this.value;
+            const totalPrice = quantity * pricePerBottle;
+            document.getElementById('totalPrice').value = totalPrice;
+
+            // Enable or disable the submit button based on form validation
+            toggleSubmitButton();
+        });
+
+        document.getElementById('name').addEventListener('input', toggleSubmitButton);
+        document.getElementById('address').addEventListener('input', toggleSubmitButton);
+
+        // Function to enable or disable the submit button
+        function toggleSubmitButton() {
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const quantity = document.getElementById('quantity').value;
+
+            const submitBtn = document.getElementById('submitBtn');
+            if (name && address && quantity > 0) {
+                submitBtn.disabled = false; // Enable button
+                submitBtn.style.backgroundColor = "#006064"; // Restore original color
+            } else {
+                submitBtn.disabled = true; // Disable button
+                submitBtn.style.backgroundColor = "#aaa"; // Gray background
+            }
+        }
+
+        // Place order function
+        function placeOrder() {
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const quantity = document.getElementById('quantity').value;
+            const event = document.getElementById('event').value;
+            const totalPrice = document.getElementById('totalPrice').value;
+            const paymentMethod = document.getElementById('payment').value;
+
+            // Store order details in localStorage
+            const orderDetails = {
+                name: name,
+                address: address,
+                quantity: quantity,
+                event: event,
+                totalPrice: totalPrice,
+                paymentMethod: paymentMethod // Store payment method
+            };
+            localStorage.setItem('orderDetails', JSON.stringify(orderDetails));
+
+            // Redirect to confirmation page
+            window.location.href = "confirm.html";
+        }
+    </script>
+</body>
+</html>
